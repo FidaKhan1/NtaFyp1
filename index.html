@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>AI Network Traffic Analyzer</title>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+</head>
+
+<body>
+
+<!-- ================= HEADER ================= -->
+
+<header class="top-header">
+
+<div class="header-left">
+
+<div class="logo-box">
+
+<i class="fa-solid fa-shield-halved"></i>
+
+</div>
+
+<div>
+
+<h1>AI Network Traffic Analyzer</h1>
+
+<p>Educational Prototype • Final Year Project-I</p>
+
+</div>
+
+</div>
+
+<div class="header-right">
+
+<div class="status-card">
+
+<span class="dot"></span>
+
+Live Monitoring
+
+</div>
+
+<a href="/logout" class="logout-btn">
+
+<i class="fa-solid fa-right-from-bracket"></i>
+
+Logout
+
+</a>
+
+</div>
+
+</header>
+
+<!-- ================= SUMMARY ================= -->
+
+<section class="summary-grid">
+
+<div class="summary-card blue">
+
+<div>
+
+<h5>Total Packets</h5>
+
+<h2 id="totalPackets">14258</h2>
+
+</div>
+
+<i class="fa-solid fa-box"></i>
+
+</div>
+
+<div class="summary-card green">
+
+<div>
+
+<h5>Network Health</h5>
+
+<h2>98%</h2>
+
+</div>
+
+<i class="fa-solid fa-heart-pulse"></i>
+
+</div>
+
+<div class="summary-card orange">
+
+<div>
+
+<h5>Active Devices</h5>
+
+<h2 id="activeDevices">8</h2>
+
+</div>
+
+<i class="fa-solid fa-desktop"></i>
+
+</div>
+
+<div class="summary-card red">
+
+<div>
+
+<h5>Threats</h5>
+
+<h2 id="threatCounter">0</h2>
+
+</div>
+
+<i class="fa-solid fa-triangle-exclamation"></i>
+
+</div>
+
+<div class="summary-card cyan">
+
+<div>
+
+<h5>Bandwidth</h5>
+
+<h2>72 Mbps</h2>
+
+</div>
+
+<i class="fa-solid fa-chart-line"></i>
+
+</div>
+
+<div class="summary-card purple">
+
+<div>
+
+<h5>Connections</h5>
+
+<h2 id="connections">31</h2>
+
+</div>
+
+<i class="fa-solid fa-network-wired"></i>
+
+</div>
+
+</section>
+
+<!-- ================= AI SECTION ================= -->
+
+<section class="ai-grid">
+
+<div class="ai-card">
+
+<h2>
+
+🤖 AI Packet Assistant
+
+</h2>
+
+<div class="protocol-icon">
+
+🌐
+
+</div>
+
+<div id="packetExplanation">
+
+<h3>
+
+Welcome
+
+</h3>
+
+<p>
+
+Click the <b>Explain</b> button on any packet to view an AI explanation.
+
+</p>
+
+</div>
+
+<div class="info-grid">
+
+<div>
+
+<h4>Protocol</h4>
+
+<span id="aiProtocol">-</span>
+
+</div>
+
+<div>
+
+<h4>OSI Layer</h4>
+
+<span id="aiLayer">-</span>
+
+</div>
+
+<div>
+
+<h4>Risk</h4>
+
+<span id="aiRisk">Safe</span>
+
+</div>
+
+<div>
+
+<h4>Confidence</h4>
+
+<span id="aiConfidence">99%</span>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="activity-card">
+
+<h2>
+
+📡 Live Activity
+
+</h2>
+
+<div id="activity-list">
+
+<div class="activity-item">
+
+System Ready...
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- ================= CHARTS ================= -->
+
+<section class="chart-grid">
+
+<div class="chart-card">
+
+<div class="card-header">
+
+<h3>📈 Live Network Traffic</h3>
+
+</div>
+
+<canvas id="trafficChart"></canvas>
+
+</div>
+
+<div class="chart-card">
+
+<div class="card-header">
+
+<h3>📊 Protocol Distribution</h3>
+
+</div>
+
+<canvas id="protocolChart"></canvas>
+
+</div>
+
+</section>
+
+
+
+<!-- ================= LIVE PACKET FEED ================= -->
+
+<section class="packet-card">
+
+<div class="card-header">
+
+<h2>📦 Live Packet Feed</h2>
+
+<span class="live-badge">LIVE</span>
+
+</div>
+
+<table class="packet-table">
+
+<thead>
+
+<tr>
+
+<th>Time</th>
+
+<th>Protocol</th>
+
+<th>Source IP</th>
+
+<th>Destination IP</th>
+
+<th>Status</th>
+
+<th>AI Explain</th>
+
+</tr>
+
+</thead>
+
+<tbody id="packetTable">
+
+<tr>
+
+<td>09:20:10</td>
+
+<td><span class="protocol dns">DNS</span></td>
+
+<td>192.168.18.5</td>
+
+<td>8.8.8.8</td>
+
+<td><span class="safe">Safe</span></td>
+
+<td>
+
+<button class="explain-btn" data-protocol="DNS">
+
+Explain
+
+</button>
+
+</td>
+
+</tr>
+
+<tr>
+
+<td>09:20:17</td>
+
+<td><span class="protocol https">HTTPS</span></td>
+
+<td>192.168.18.5</td>
+
+<td>142.250.190.78</td>
+
+<td><span class="safe">Encrypted</span></td>
+
+<td>
+
+<button class="explain-btn" data-protocol="HTTPS">
+
+Explain
+
+</button>
+
+</td>
+
+</tr>
+
+<tr>
+
+<td>09:20:24</td>
+
+<td><span class="protocol tcp">TCP</span></td>
+
+<td>192.168.18.5</td>
+
+<td>172.217.16.14</td>
+
+<td><span class="safe">Connected</span></td>
+
+<td>
+
+<button class="explain-btn" data-protocol="TCP">
+
+Explain
+
+</button>
+
+</td>
+
+</tr>
+
+<tr>
+
+<td>09:20:30</td>
+
+<td><span class="protocol udp">UDP</span></td>
+
+<td>192.168.18.5</td>
+
+<td>52.96.15.20</td>
+
+<td><span class="safe">Streaming</span></td>
+
+<td>
+
+<button class="explain-btn" data-protocol="UDP">
+
+Explain
+
+</button>
+
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</section>
+
+
+
+<!-- ================= THREAT OVERVIEW ================= -->
+
+<section class="threat-grid">
+
+<div class="threat-card success">
+
+<h4>🟢 Safe Packets</h4>
+
+<h2>97%</h2>
+
+<p>Traffic analyzed by AI</p>
+
+</div>
+
+<div class="threat-card warning">
+
+<h4>🟡 Suspicious</h4>
+
+<h2>2%</h2>
+
+<p>Requires monitoring</p>
+
+</div>
+
+<div class="threat-card danger">
+
+<h4>🔴 Threats</h4>
+
+<h2 id="threatCounter2">0</h2>
+
+<p>No attacks detected</p>
+
+</div>
+
+</section>
+
+
+
+<!-- ================= TOP ACTIVE DEVICES ================= -->
+
+<section class="top-talkers">
+
+<div class="card-header">
+
+<h2>💻 Top Active Devices</h2>
+
+</div>
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Device</th>
+
+<th>IP Address</th>
+
+<th>Packets</th>
+
+<th>Protocol</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+<tr>
+
+<td>Laptop</td>
+
+<td>192.168.18.5</td>
+
+<td>6543</td>
+
+<td>HTTPS</td>
+
+</tr>
+
+<tr>
+
+<td>Android Phone</td>
+
+<td>192.168.18.7</td>
+
+<td>2450</td>
+
+<td>DNS</td>
+
+</tr>
+
+<tr>
+
+<td>Smart TV</td>
+
+<td>192.168.18.10</td>
+
+<td>1210</td>
+
+<td>UDP</td>
+
+</tr>
+
+<tr>
+
+<td>Router</td>
+
+<td>192.168.18.1</td>
+
+<td>903</td>
+
+<td>ARP</td>
+
+</tr>
+
+<tr>
+
+<td>Desktop PC</td>
+
+<td>192.168.18.20</td>
+
+<td>812</td>
+
+<td>TCP</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</section>
+<!-- ================= AI INSIGHTS ================= -->
+
+<section class="ai-grid">
+
+<div class="ai-card">
+
+<h2>🧠 AI Network Insights</h2>
+
+<div class="activity-item">
+✅ Network Health is Excellent (98%)
+</div>
+
+<div class="activity-item">
+🔒 HTTPS traffic is dominating the network.
+</div>
+
+<div class="activity-item">
+🌍 DNS requests are resolving successfully.
+</div>
+
+<div class="activity-item">
+📡 No suspicious ICMP flooding detected.
+</div>
+
+<div class="activity-item">
+🛡 Firewall Status : Protected
+</div>
+
+</div>
+
+<div class="activity-card">
+
+<h2>📋 AI Recommendations</h2>
+
+<div class="activity-item">
+✔ Enable HTTPS for all web applications.
+</div>
+
+<div class="activity-item">
+✔ Monitor UDP traffic continuously.
+</div>
+
+<div class="activity-item">
+✔ Check DNS latency regularly.
+</div>
+
+<div class="activity-item">
+✔ Keep firewall rules updated.
+</div>
+
+<div class="activity-item">
+✔ Perform weekly vulnerability scans.
+</div>
+
+</div>
+
+</section>
+
+
+<!-- ================= FOOTER ================= -->
+
+<footer class="footer">
+
+<p>
+
+© 2026 AI Network Traffic Analyzer |
+Final Year Project (FYP-I)
+
+</p>
+
+<p>
+
+Developed for Educational Demonstration
+
+</p>
+
+</footer>
+
+
+<!-- ================= SCRIPTS ================= -->
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script src="{{ url_for('static', filename='main.js') }}"></script>
+
+</body>
+
+</html>
